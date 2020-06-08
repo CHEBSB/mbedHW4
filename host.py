@@ -51,8 +51,8 @@ while t <= 20:
     # send RPC to remote
     s.write("/getTimes/run\r\n".encode())
     time.sleep(1)
-    #line=s.readline()
-    #print(line)
+    #line = s.read(3)
+    #print(line.decode())
     t = t + 1
 
 s.close()
