@@ -30,7 +30,7 @@ int m_addr = FXOS8700CQ_SLAVE_ADDR1;
 void FXOS8700CQ_readRegs(int addr, uint8_t * data, int len);
 void FXOS8700CQ_writeRegs(uint8_t * data, int len);
 void getAcc();
-void getTimes(Arguments *in, Reply *out)
+void getTimes(Arguments *in, Reply *out);
 RPCFunction rpcAcc(&getTimes, "getTimes");
 
 int collectTime = 0;	// how many time ata is collecte.
@@ -175,9 +175,11 @@ void getAcc() {
 }
 void getTimes(Arguments *in, Reply *out) {
 	pc.printf("%d\r\n", collectTime);
-	for (int i = 0; i < collectTime; i++)
-		pc.printf("%1.4f %1.4f %1.4f %d\r\n", \
+	for (int i = 0; i < collectTime; i++) {
+		wait(0.1);
+		pc.printf("%1.3f %1.3f %1.3f %d\r\n", \
 		Acc[i][0], Acc[i][1], Acc[i][2], Tilt[i]);
+	}
 	collectTime = 0;
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 3; j++)

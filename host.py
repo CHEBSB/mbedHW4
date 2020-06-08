@@ -49,8 +49,10 @@ t = 1
 print("start sending RPC")
 while t <= 20:
     # send RPC to remote
-    s.write("/getTimes/run\r".encode())
+    s.write("/getTimes/run\r\n".encode())
     time.sleep(1)
+    #line=s.readline()
+    #print(line)
     t = t + 1
 
 s.close()
