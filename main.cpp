@@ -34,8 +34,8 @@ void getTimes(Arguments *in, Reply *out);
 RPCFunction rpcAcc(&getTimes, "getTimes");
 
 int collectTime = 0;	// how many time ata is collecte.
-float Acc[10][3];
-bool Tilt[10];
+float Acc[15][3];
+bool Tilt[15];
 EventQueue queue(32 * EVENTS_EVENT_SIZE);
 Thread t(osPriorityHigh);
 EventQueue queue2(32 * EVENTS_EVENT_SIZE);
@@ -86,7 +86,7 @@ int main() {
 	FXOS8700CQ_writeRegs(data, 2);
 
 	t2.start(callback(&queue2, &EventQueue::dispatch_forever));
-	queue2.call_every(200, getAcc);	// every 0.2 sec, get Acc
+	queue2.call_every(100, getAcc);	// every 0.1 sec, get Acc
 	// Setup a serial interrupt function of receiving data from xbee
 	xbee.attach(xbee_rx_interrupt, Serial::RxIrq);
 }
@@ -158,11 +158,7 @@ void getAcc() {
 	if (acc16 > UINT14_MAX / 2)
 		acc16 -= UINT14_MAX;
 	T[2] = ((float)acc16) / 4096.0f;
-/*	pc.printf("\r\nFXOS8700Q ACC: X=%1.4f(%x%x) Y=%1.4f(%x%x) Z=%1.4f(%x%x)\r\n", \
-		T[0], res[0], res[1], \
-		T[1], res[2], res[3], \
-		T[2], res[4], res[5]\
-	);*/
+
 	if (collectTime >= 10)	collectTime = 0;
 	Acc[collectTime][0] = T[0];
 	Acc[collectTime][1] = T[1];
@@ -175,15 +171,16 @@ void getAcc() {
 }
 void getTimes(Arguments *in, Reply *out) {
 	pc.printf("\r\n%d\r\n", collectTime);
-	int temp = collectTime;
-	for (int i = 0; i < temp; i++) {
+//	xbee.printf("\r\n%d\r\n", collectTime);
+	for (int i = 0; i < collectTime; i++) {
 		pc.printf("%1.3f %1.3f %1.3f %d\r\n", \
 		Acc[i][0], Acc[i][1], Acc[i][2], Tilt[i]);
 	}
 	collectTime = 0;
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 3; j++)
-			Acc[i][j] = 0;
+	for (int i = 0; i < 15; i++) {
+		Acc[i][0] = 0;
+		Acc[i][1] = 0;
+		Acc[i][2] = 0;
 		Tilt[i] = false;
 	}
 }
