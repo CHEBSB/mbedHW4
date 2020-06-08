@@ -37,7 +37,7 @@ int collectTime = 0;	// how many time ata is collecte.
 float Acc[10][3];
 bool Tilt[10];
 EventQueue queue(32 * EVENTS_EVENT_SIZE);
-Thread t;
+Thread t(osPriorityHigh);
 EventQueue queue2(32 * EVENTS_EVENT_SIZE);
 Thread t2;	// for accelerameter
 
@@ -174,12 +174,9 @@ void getAcc() {
 	collectTime++;
 }
 void getTimes(Arguments *in, Reply *out) {
-	xbee.printf("%d\r\n", collectTime);
-	pc.printf("%d\r\n", collectTime);
-	for (int i = 0; i < collectTime; i++) {
-		wait(0.1);
-		xbee.printf("%1.3f %1.3f %1.3f %d\r\n", \
-		Acc[i][0], Acc[i][1], Acc[i][2], Tilt[i]);
+	pc.printf("\r\n%d\r\n", collectTime);
+	int temp = collectTime;
+	for (int i = 0; i < temp; i++) {
 		pc.printf("%1.3f %1.3f %1.3f %d\r\n", \
 		Acc[i][0], Acc[i][1], Acc[i][2], Tilt[i]);
 	}
