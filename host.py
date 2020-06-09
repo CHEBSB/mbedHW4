@@ -57,10 +57,18 @@ while t <= 20:
     time.sleep(1)
     t = t + 1
 
+#while s.in_waiting > 0:
+#    line = s.readline().decode()
+#    print("Get: " + line + "\n")
+
 collect = np.arange(20)     # array size = 20 
+t1 = np.arange(1, 21)       # time axis for collect
 for i in range(20) :
-    collect[i] = s.read()
-    num = int(collect[i].decode())
+    temp = s.read()
+    temp = temp.decode()
+    if temp.isnumeric() == False:
+        continue
+    collect[i] = int(temp)
     for j in range(num) :
         line = s.readline().decode()
         # seperate the line into 4 parts
