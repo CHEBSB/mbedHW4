@@ -47,22 +47,24 @@ char = s.read(3)
 print("Exit AT mode.")
 print(char.decode())
 
-t = 0
+t = 1
 print("start sending RPC")
+# the first call give no reply, idk
+s.write("/getTimes/run\r".encode())
 while t <= 20:
     # send RPC to remote
     s.write("/getTimes/run\r".encode())
     time.sleep(1)
     t = t + 1
 
-collect = np.arange(20)     # aay size = 20 
+collect = np.arange(20)     # array size = 20 
 for i in range(20) :
     collect[i] = s.read()
     num = int(collect[i].decode())
     for j in range(num) :
         line = s.readline().decode()
-        # seperate the line into 4 parts #
-        Tp = line.split()   # split whitespace
+        # seperate the line into 4 parts
+        Tp = line.split()   # split by whitespace
         x[i] = float(Tp[0])
         y[i] = float(Tp[1])
         z[i] = float(Tp[2])
