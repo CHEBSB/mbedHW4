@@ -57,24 +57,76 @@ while t <= 20:
     time.sleep(1)
     t = t + 1
 
-#while s.in_waiting > 0:
-#    line = s.readline().decode()
-#    print("Get: " + line + "\n")
+while s.in_waiting > 0:
+    line = s.readline().decode()
+    print("Get: " + line + "\n")
 
+"""
 collect = np.arange(20)     # array size = 20 
 t1 = np.arange(1, 21)       # time axis for collect
-for i in range(20) :
-    temp = s.read()
-    temp = temp.decode()
-    if temp.isnumeric() == False:
+i = 0
+while i < 20 and s.in_waiting > 0 :
+    temp = s.readline().decode()
+    TT = temp.split()
+    if len(TT) == 1 and TT[0].isnumeric() == True:
+        collect[i] = int(TT[0])
+    else:
+        print(temp + "is not int")
         continue
-    collect[i] = int(temp)
-    for j in range(num) :
+    if i == 0:      # initialize
+        print("This is i = 0. Initialize")
+        t = np.arange(0, 1, collect[0])
+        x = np.arange(collect[0])
+        y = np.arange(collect[0])
+        z = np.arange(collect[0])
+        tilt = np.arange(collect[0])
+    else:           # concatenate
+        print("This is i = " + i + ". Continue to concatenate")
+        temp = np.arange(i, i+1, collect[i])
+        t = np.concatenate((t, temp))
+        tempx = np.arange(collect[i])
+        tempy = np.arange(collect[i])
+        tempz = np.arange(collect[i])
+        tempTilt = np.arange(collect[i])
+    j = 0
+    while j < collect[i] :
         line = s.readline().decode()
         # seperate the line into 4 parts
         Tp = line.split()   # split by whitespace
-        x[i] = float(Tp[0])
-        y[i] = float(Tp[1])
-        z[i] = float(Tp[2])
-        tilt[i] = int(Tp[3])
+        if len(Tp) == 4:
+            if i == 0:
+                x[j] = float(Tp[0])
+                y[j] = float(Tp[1])
+                z[j] = float(Tp[2])
+                tilt[j] = int(Tp[3])
+            else:
+                tempx[j] = float(Tp[0])
+                tempy[j] = float(Tp[1])
+                tempz[j] = float(Tp[2])
+                tempTilt[j] = int(Tp[3])
+            j = j + 1
+        else : 
+            print("sth wrong with" + line)
+            continue
+    if i > 0:
+        x = np.concatenate((x, tempx))
+        y = np.concatenate((y, tempy))
+        z = np.concatenate((z, tempz))
+        tilt = np.concatenate((tilt, tempTilt))
+    i = i + 1
+
+fig, ax = plt.subplots(2, 1)
+ax[0].plot(t, x, 'r')
+ax[0].plot(t, y, 'y')
+ax[0].plot(t, z, 'b')
+
+ax[0].legend("xyz",loc='center left', bbox_to_anchor=(1, 0.5))
+ax[0].set_xlabel('Time')
+ax[0].set_ylabel('Acc Vector')
+ax[1].stem(t1, tilt,'r') 
+
+ax[1].set_xlabel('Time')
+ax[1].set_ylabel('tilt')
+plt.show()
+"""
 s.close()
