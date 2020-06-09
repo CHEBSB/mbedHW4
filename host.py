@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+import numpy as np
 import serial
 import time
 
@@ -45,14 +47,24 @@ char = s.read(3)
 print("Exit AT mode.")
 print(char.decode())
 
-t = 1
+t = 0
 print("start sending RPC")
 while t <= 20:
     # send RPC to remote
     s.write("/getTimes/run\r".encode())
     time.sleep(1)
     t = t + 1
-while s.in_waiting > 0 :
-    line = s.readline()
-    print("Hello: " + line.decode())
+
+collect = np.arange(20)     # aay size = 20 
+for i in range(20) :
+    collect[i] = s.read()
+    num = int(collect[i].decode())
+    for j in range(num) :
+        line = s.readline().decode()
+        # seperate the line into 4 parts #
+        Tp = line.split()   # split whitespace
+        x[i] = float(Tp[0])
+        y[i] = float(Tp[1])
+        z[i] = float(Tp[2])
+        tilt[i] = int(Tp[3])
 s.close()
