@@ -172,7 +172,7 @@ void getAcc() {
 void getTimes(Arguments *in, Reply *out) {
 	xbee.printf("%d\r\n", collectTime);
 	for (int i = 0; i < collectTime; i++) {
-		xbee.printf("%1.3f %1.3f %1.3f %d\r\n", \
+		xbee.printf("%.3f %.3f %.3f %d\r\n", \
 		Acc[i][0], Acc[i][1], Acc[i][2], Tilt[i]);
 	}
 	collectTime = 0;

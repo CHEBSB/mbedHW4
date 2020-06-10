@@ -56,7 +56,7 @@ while t <= 20:
     s.write("/getTimes/run\r".encode())
     time.sleep(1)
     t = t + 1
-
+"""
 while s.in_waiting > 0:
     line = s.readline().decode()
     print("Get: " + line + "\n")
@@ -66,23 +66,25 @@ collect = np.arange(20)     # array size = 20
 t1 = np.arange(1, 21)       # time axis for collect
 i = 0
 while i < 20 and s.in_waiting > 0 :
-    temp = s.readline().decode()
+    temp = s.readline()
+    temp = temp.decode()
     TT = temp.split()
     if len(TT) == 1 and TT[0].isnumeric() == True:
         collect[i] = int(TT[0])
+        print("collect[", i, "] = ", collect[i])
     else:
         print(temp + "is not int")
         continue
     if i == 0:      # initialize
         print("This is i = 0. Initialize")
-        t = np.arange(0, 1, collect[0])
+        t = np.linspace(0, 1, num = collect[0], endpoint=False)
         x = np.arange(collect[0])
         y = np.arange(collect[0])
         z = np.arange(collect[0])
         tilt = np.arange(collect[0])
     else:           # concatenate
-        print("This is i = " + i + ". Continue to concatenate")
-        temp = np.arange(i, i+1, collect[i])
+        print("This is i = ",i,". Continue to concatenate")
+        temp = np.linspace(i, i+1, num = collect[i], endpoint=False)
         t = np.concatenate((t, temp))
         tempx = np.arange(collect[i])
         tempy = np.arange(collect[i])
@@ -119,14 +121,14 @@ fig, ax = plt.subplots(2, 1)
 ax[0].plot(t, x, 'r')
 ax[0].plot(t, y, 'y')
 ax[0].plot(t, z, 'b')
-
-ax[0].legend("xyz",loc='center left', bbox_to_anchor=(1, 0.5))
+#ax[0].stem(t, tilt, 'b')
+#ax[0].legend("xyzT",loc='center left', bbox_to_anchor=(1, 0.5))
 ax[0].set_xlabel('Time')
 ax[0].set_ylabel('Acc Vector')
-ax[1].stem(t1, tilt,'r') 
+ax[1].stem(t1, collect,'r') 
 
 ax[1].set_xlabel('Time')
-ax[1].set_ylabel('tilt')
+ax[1].set_ylabel('collect')
 plt.show()
-"""
+
 s.close()
