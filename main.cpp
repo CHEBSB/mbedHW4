@@ -34,7 +34,7 @@ void getTimes(Arguments *in, Reply *out);
 RPCFunction rpcAcc(&getTimes, "getTimes");
 
 int collectTime = 0;	// how many time ata is collecte.
-float Acc[15][3];
+float Accx[15], Accy[15], Accz[15];
 bool Tilt[15];
 EventQueue queue(32 * EVENTS_EVENT_SIZE);
 Thread t(osPriorityHigh);
@@ -140,46 +140,45 @@ void check_addr(char *xbee_reply, char *messenger) {
 }
 void getAcc() {
 	int16_t acc16;
-	float T[3];
 	uint8_t res[6];
 	FXOS8700CQ_readRegs(FXOS8700Q_OUT_X_MSB, res, 6);
+
+	if (collectTime > 10)	collectTime = 0;
 
 	acc16 = (res[0] << 6) | (res[1] >> 2);
 	if (acc16 > UINT14_MAX / 2)
 		acc16 -= UINT14_MAX;
-	T[0] = ((float)acc16) / 4096.0f;
+	Accx[collectTime] = ((float)acc16) / 4096.0f;
 
 	acc16 = (res[2] << 6) | (res[3] >> 2);
 	if (acc16 > UINT14_MAX / 2)
 		acc16 -= UINT14_MAX;
-	T[1] = ((float)acc16) / 4096.0f;
+	Accy[collectTime] = ((float)acc16) / 4096.0f;
 
 	acc16 = (res[4] << 6) | (res[5] >> 2);
 	if (acc16 > UINT14_MAX / 2)
 		acc16 -= UINT14_MAX;
-	T[2] = ((float)acc16) / 4096.0f;
+	Accz[collectTime] = ((float)acc16) / 4096.0f;
 
-	if (collectTime > 10)	collectTime = 0;
-	Acc[collectTime][0] = T[0];
-	Acc[collectTime][1] = T[1];
-	Acc[collectTime][2] = T[2];
-	if (T[0] > 0.5 || T[0] < -0.5 || T[1] > 0.5 || T[1] < -0.5) 
+	if (Accx[collectTime] > 0.5 || Accx[collectTime] < -0.5 
+	|| Accy[collectTime] > 0.5 || Accy[collectTime] < -0.5) 
 		Tilt[collectTime] = true;	// tilt
 	else 
 		Tilt[collectTime] = false;
+		
 	collectTime++;
 }
 void getTimes(Arguments *in, Reply *out) {
 	xbee.printf("%d\r\n", collectTime);
 	for (int i = 0; i < collectTime; i++) {
 		xbee.printf("%.3f %.3f %.3f %d\r\n", \
-		Acc[i][0], Acc[i][1], Acc[i][2], Tilt[i]);
+		Accx[i], Accy[i], Accz[i], Tilt[i]);
 	}
 	collectTime = 0;
 	for (int i = 0; i < 15; i++) {
-		Acc[i][0] = 0;
-		Acc[i][1] = 0;
-		Acc[i][2] = 0;
+		Accx[i] = 0;
+		Accy[i] = 0;
+		Accz[i] = 0;
 		Tilt[i] = false;
 	}
 }

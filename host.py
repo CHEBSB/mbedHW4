@@ -56,8 +56,8 @@ while t <= 20:
     s.write("/getTimes/run\r".encode())
     time.sleep(1)
     t = t + 1
-"""
-while s.in_waiting > 0:
+""" 
+while s.in_waiting > 0:     # for debug use only
     line = s.readline().decode()
     print("Get: " + line + "\n")
 
