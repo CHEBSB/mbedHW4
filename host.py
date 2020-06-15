@@ -47,11 +47,11 @@ char = s.read(3)
 print("Exit AT mode.")
 print(char.decode())
 
-t = 1
+t = 0
 print("start sending RPC")
-# the first call give no reply, idk
+# the first call give no reply, idky
 s.write("/getTimes/run\r".encode())
-while t <= 20:
+while t < 20:
     # send RPC to remote
     s.write("/getTimes/run\r".encode())
     time.sleep(1)
@@ -121,13 +121,14 @@ fig, ax = plt.subplots(2, 1)
 ax[0].plot(t, x, 'r')
 ax[0].plot(t, y, 'y')
 ax[0].plot(t, z, 'b')
-ax[0].stem(t, tilt, 'c')
-ax[0].legend("xyz",loc='center left', bbox_to_anchor=(1, 0.5))
+ax[0].stem(t, tilt, 'c', use_line_collection=True)
+ax[0].legend("xyztilt",loc='center left', bbox_to_anchor=(1, 0.5))
 ax[0].set_xlabel('Time')
+ax[0].set_xlim(right = i + 1)    # remaining data is meaningless
 ax[0].set_ylabel('Acc Vector')
-ax[1].stem(t1, collect,'g') 
-
+ax[1].stem(t1, collect,'g', use_line_collection=True) 
 ax[1].set_xlabel('Time')
+ax[0].set_xlim(right = i + 1)    # remaining data is meaningless
 ax[1].set_ylabel('collect')
 plt.show()
 
