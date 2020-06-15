@@ -51,7 +51,7 @@ t = 0
 print("start sending RPC")
 # the first call give no reply, idky
 s.write("/getTimes/run\r".encode())
-while t < 20:
+while t <= 21:
     # send RPC to remote
     s.write("/getTimes/run\r".encode())
     time.sleep(1)
@@ -117,19 +117,22 @@ while i < 20 and s.in_waiting > 0 :
         tilt = np.concatenate((tilt, tempTilt))
     i = i + 1
 
-fig, ax = plt.subplots(2, 1)
+fig, ax = plt.subplots(3, 1)
 ax[0].plot(t, x, 'r')
 ax[0].plot(t, y, 'y')
 ax[0].plot(t, z, 'b')
-ax[0].stem(t, tilt, 'c', use_line_collection=True)
-ax[0].legend("xyztilt",loc='center left', bbox_to_anchor=(1, 0.5))
+ax[0].legend("xyz",loc='center left', bbox_to_anchor=(1, 0.5))
 ax[0].set_xlabel('Time')
-ax[0].set_xlim(right = i + 1)    # remaining data not obtained
+#ax[0].set_xlim(right = i + 1)    # remaining data not obtained
 ax[0].set_ylabel('Acc Vector')
-ax[1].stem(t1, collect,'g', use_line_collection=True) 
+ax[1].stem(t1, collect, use_line_collection=True) 
 ax[1].set_xlabel('Time')
-ax[0].set_xlim(right = i + 1)    # remaining data not obtained
 ax[1].set_ylabel('collect')
+#ax[1].set_xlim(right = i + 1)    # remaining data not obtained
+ax[2].set_ylabel('tilt')
+ax[2].stem(t, tilt, use_line_collection=True, markerfmt=" ")
+ax[2].set_xlabel('Time')
+#ax[2].set_xlim(right = i + 1)    # remaining data not obtained
 plt.show()
 
 s.close()
