@@ -124,11 +124,11 @@ ax[0].plot(t, z, 'b')
 ax[0].stem(t, tilt, 'c', use_line_collection=True)
 ax[0].legend("xyztilt",loc='center left', bbox_to_anchor=(1, 0.5))
 ax[0].set_xlabel('Time')
-ax[0].set_xlim(right = i + 1)    # remaining data is meaningless
+ax[0].set_xlim(right = i + 1)    # remaining data not obtained
 ax[0].set_ylabel('Acc Vector')
 ax[1].stem(t1, collect,'g', use_line_collection=True) 
 ax[1].set_xlabel('Time')
-ax[0].set_xlim(right = i + 1)    # remaining data is meaningless
+ax[0].set_xlim(right = i + 1)    # remaining data not obtained
 ax[1].set_ylabel('collect')
 plt.show()
 
